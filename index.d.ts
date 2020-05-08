@@ -147,7 +147,7 @@ interface PlayerMp extends EntityMp {
 	readonly socialClub: string;
 	readonly streamedPlayers: PlayerMp[];
 	readonly weapons: PlayerWeaponCollectionMp;
-	readonly vehicle: VehicleMp;
+	readonly vehicle?: VehicleMp;
 	readonly voiceListeners: PlayerMp[];
 
 	ban(reason: string): void;
