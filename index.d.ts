@@ -141,7 +141,9 @@ interface PlayerMp extends EntityMp {
 	readonly hairHighlightColor: number;
 	readonly packetLoss: number;
 	readonly ping: number;
+	readonly rgscId: string;
 	readonly seat: RageEnums.VehicleSeat;
+	readonly serial: string;
 	readonly socialClub: string;
 	readonly streamedPlayers: PlayerMp[];
 	readonly weapons: PlayerWeaponCollectionMp;
@@ -149,7 +151,7 @@ interface PlayerMp extends EntityMp {
 	readonly voiceListeners: PlayerMp[];
 
 	ban(reason: string): void;
-	call(eventName: string, args: any[]): void;
+	call(eventName: string, args?: any[]): void;
 	clearDecorations(): void;
 	disableVoiceTo(targetPlayer: PlayerMp): void;
 	enableVoiceTo(targetPlayer: PlayerMp): void;
@@ -358,6 +360,7 @@ interface EventMp {
 }
 
 interface ConfigMp {
+	[prop: string]: any;
 	announce: boolean;
 	bind: string;
 	gamemode: string;
@@ -461,6 +464,7 @@ interface EntityMpPool<TEntity> {
 		fn: (entity: TEntity) => void
 	): void;
 	forEachInDimension(dimension: number, fn: (entity: TEntity) => void): void;
+	getClosest(position: Vector3Mp, limit: number): TEntity;
 	toArray(): TEntity[];
 }
 
@@ -482,6 +486,9 @@ interface EventMpPool {
 		) => void;
 	}): void;
 	call(eventName: string, ...args: any[]): void;
+	callLocal(eventName: string, ...args: any[]): void;
+	delayShutdown: boolean;
+	delayInitialization: boolean;
 	getAllOf(eventName: string): EventMp[];
 	remove(eventName: string, handler?: (...args: any[]) => void): void;
 	remove(eventNames: string[]): void;
@@ -528,10 +535,16 @@ interface PlayerMpPool extends EntityMpPool<PlayerMp> {
 		dimension: number,
 		text: string
 	): void;
+	broadcastInDimension(dimension: number, text: string): void;
 	call(eventName: string, ...args: any[]): void;
 	call(players: PlayerMp[], eventName: string, ...args: any[]): void;
-	callInDimension(eventName: string, ...args: any[]): void;
-	callInRange(eventName: string, ...args: any[]): void;
+	callInDimension(dimension: number, eventName: string, ...args: any[]): void;
+	callInRange(
+		position: Vector3Mp,
+		range: number,
+		eventName: string,
+		...args: any[]
+	): void;
 }
 
 interface TextLabelMpPool extends EntityMpPool<TextLabelMp> {
@@ -577,13 +590,23 @@ type Vector3Mp = {
 
 	add(value: number): Vector3Mp;
 	add(vector3: Vector3Mp): Vector3Mp;
+	angleTo(vector3: Vector3Mp): number;
+	clone(): Vector3Mp;
+	cross(vector3: Vector3Mp): Vector3Mp;
 	divide(value: number): Vector3Mp;
 	divide(vector3: Vector3Mp): Vector3Mp;
+	dot(vector3: Vector3Mp): number;
+	equals(vector3: Vector3Mp): boolean;
 	length(): number;
+	max(): number;
+	min(): number;
 	multiply(value: number): Vector3Mp;
 	multiply(vector3: Vector3Mp): Vector3Mp;
+	negative(): Vector3Mp;
 	subtract(value: number): Vector3Mp;
 	subtract(vector3: Vector3Mp): Vector3Mp;
+	toAngles(): Array2d;
+	toArray(): Array3d;
 	unit(): Vector3Mp;
 };
 
